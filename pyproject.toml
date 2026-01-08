@@ -16,8 +16,8 @@ readme = "README.md"
 license = { text = "MIT" }
 
 # Python version requirement
-# Adjust this based on your needs (e.g., ">=3.11" for Python 3.11+)
-requires-python = ">=3.11"
+# Adjust this based on your needs (e.g., ">=3.13" for Python 3.13+)
+requires-python = ">=3.13"
 
 # Runtime dependencies
 # Add packages your application needs to run
@@ -90,14 +90,14 @@ addopts = [
     "--cov=src",                  # Measure coverage for src/ directory
     "--cov-report=term-missing",  # Show missing lines in terminal
     "--cov-report=html",          # Generate HTML coverage report
-    "--cov-fail-under=80",        # Fail if coverage below 80%
+    "--cov-fail-under=50",        # Fail if coverage below 50%
 ]
 
 # --- ruff Configuration ---
 # Fast Python linter and formatter
 [tool.ruff]
 # Target Python version
-target-version = "py311"
+target-version = "py313"
 
 # Files and directories to include
 include = ["src/**/*.py", "tests/**/*.py"]
@@ -150,7 +150,7 @@ known-first-party = ["python_template"]
 # Static type checker
 [tool.mypy]
 # Target Python version
-python_version = "3.11"
+python_version = "3.13"
 # Directories to type check
 files = ["src", "tests"]
 

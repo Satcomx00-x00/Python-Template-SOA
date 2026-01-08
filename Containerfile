@@ -1,8 +1,10 @@
 # ============================================================================
-# Containerfile - Container Image Definition
+# Containerfile - General Purpose Python Application
 # ============================================================================
-# This file defines how to build a container image for the application
-# using uv for fast dependency installation
+# This is the default Containerfile for general-purpose Python applications
+# For specific use cases, see:
+#   - Containerfile.webapp - Web applications with HTTP servers
+#   - Containerfile.algo - CPU-intensive algorithmic/computational tasks
 #
 # Build: docker build -f Containerfile -t python-template .
 # Run:   docker run python-template
@@ -10,7 +12,7 @@
 
 # Use official Python slim image as base
 # Slim variant is smaller and contains only essential packages
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 # Set environment variables
 # PYTHONUNBUFFERED: Prevents Python from buffering stdout/stderr (better for container logs)

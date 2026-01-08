@@ -18,7 +18,7 @@ A modern Python project template with best practices, security scanning, and con
 
 ### Prerequisites
 
-- Python 3.11+
+- Python 3.13+
 - [uv](https://github.com/astral-sh/uv) installed (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
 
 ### Installation
@@ -101,12 +101,66 @@ uv run pytest
 
 ## Container Usage
 
+This template includes multiple Containerfiles optimized for different use cases:
+
+### General Purpose (`Containerfile`)
+Basic containerization for general Python applications.
+
 ```bash
-# Build the container
+# Build
 docker build -f Containerfile -t python-template .
 
-# Run the container
+# Run
 docker run python-template
+```
+
+### Web Application (`Containerfile.webapp`)
+Optimized for web apps with HTTP servers (Flask, FastAPI, Django).
+
+```bash
+# Build
+make container-build-webapp
+
+# Run (exposes port 8000)
+make container-run-webapp
+
+# Or manually
+docker run -p 8000:8000 python-template-soa:webapp
+```
+
+### Algorithmic/Computational (`Containerfile.algo`)
+Optimized for CPU-intensive computations and batch processing.
+
+```bash
+# Build
+make container-build-algo
+
+# Run
+make container-run-algo
+
+# Run with CPU/memory limits
+docker run --cpus="4.0" --memory="4g" python-template-soa:algo
+```
+
+### Command-Line Tool (`Containerfile.cli`)
+Minimal Alpine-based image for CLI tools and scripts.
+
+```bash
+# Build
+make container-build-cli
+
+# Run with arguments
+docker run python-template-soa:cli greet "World"
+
+# Create alias for easier usage
+alias python-cli='docker run --rm python-template-soa:cli'
+python-cli --help
+```
+
+### Build All Variants
+
+```bash
+make container-build-all
 ```
 
 ## DevContainer

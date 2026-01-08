@@ -1,0 +1,130 @@
+# ============================================================================
+# Containerfile.algo - Algorithmic/Computational Tasks
+# ============================================================================
+# Optimized for CPU-intensive algorithmic and computational workloads
+# Includes:
+#   - No HTTP server overhead
+#   - Optimized Python settings for performance
+#   - Scientific computing libraries support
+#   - Batch processing capabilities
+#
+# Build: docker build -f Containerfile.algo -t python-algo .
+# Run:   docker run python-algo
+# ============================================================================
+
+# Use official Python image (not slim) for scientific computing
+# Includes build tools needed for numpy, scipy, pandas, etc.
+FROM python:3.13
+
+# Set environment variables optimized for computation
+# PYTHONUNBUFFERED: Prevents Python from buffering stdout/stderr
+# PYTHONDONTWRITEBYTECODE: Prevents Python from writing .pyc files
+# UV_SYSTEM_PYTHON: Allow uv to use system Python
+# PYTHONHASHSEED: Set to 0 for reproducible results in algorithms
+# OMP_NUM_THREADS: OpenMP threads (adjust based on CPU cores)
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    UV_SYSTEM_PYTHON=1 \
+    PYTHONHASHSEED=0 \
+    OMP_NUM_THREADS=4
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies for scientific computing
+# These are commonly needed for numpy, scipy, pandas, matplotlib, etc.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gfortran \
+    libopenblas-dev \
+    liblapack-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv - fast Python package installer
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# Copy dependency files first (for layer caching)
+COPY pyproject.toml ./
+
+# Install dependencies
+# Add common scientific computing libraries
+# Uncomment the ones you need:
+RUN uv pip install --system -r pyproject.toml
+    # Scientific computing stack (uncomment if needed):
+    # uv pip install --system numpy scipy pandas matplotlib scikit-learn
+
+# Copy the application source code
+COPY src/ ./src/
+
+# Copy any data files if needed
+# COPY data/ ./data/
+
+# Create a non-root user for security
+RUN useradd -m -u 1000 algouser && \
+    chown -R algouser:algouser /app
+
+# Switch to non-root user
+USER algouser
+
+# No ports exposed - this is for batch processing
+
+# Default command - run the algorithm/computation
+# Adjust this to your main script
+CMD ["python", "-m", "python_template.main"]
+
+# Alternative commands for different use cases:
+#
+# Run a specific algorithm script:
+# CMD ["python", "src/python_template/algorithm.py"]
+#
+# Run with input arguments:
+# CMD ["python", "-m", "python_template.main", "--input", "data/input.csv", "--output", "results/"]
+#
+# Run in optimized mode (with -O flag):
+# CMD ["python", "-O", "-m", "python_template.main"]
+#
+# Run with profiling:
+# CMD ["python", "-m", "cProfile", "-o", "profile.stats", "-m", "python_template.main"]
+
+# ============================================================================
+# Usage Examples
+# ============================================================================
+#
+# Build:
+#   docker build -f Containerfile.algo -t python-algo .
+#
+# Run default computation:
+#   docker run python-algo
+#
+# Run with input files mounted:
+#   docker run -v $(pwd)/data:/app/data python-algo
+#
+# Run with custom arguments:
+#   docker run python-algo python -m python_template.main --param value
+#
+# Run and save output:
+#   docker run -v $(pwd)/output:/app/output python-algo
+#
+# Run with specific CPU limits:
+#   docker run --cpus="4.0" --memory="4g" python-algo
+#
+# Run interactively for debugging:
+#   docker run -it python-algo /bin/bash
+#
+# ============================================================================
+# Performance Tips
+# ============================================================================
+#
+# 1. CPU limits: Use --cpus to limit CPU usage
+#    docker run --cpus="2.0" python-algo
+#
+# 2. Memory limits: Use --memory to limit RAM
+#    docker run --memory="2g" python-algo
+#
+# 3. Parallel processing: Set OMP_NUM_THREADS environment variable
+#    docker run -e OMP_NUM_THREADS=8 python-algo
+#
+# 4. NumPy optimization: Set OPENBLAS_NUM_THREADS
+#    docker run -e OPENBLAS_NUM_THREADS=8 python-algo
+#
+# ============================================================================

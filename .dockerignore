@@ -6,11 +6,15 @@
 # CI/CD
 .github
 
-# Documentation
+# Documentation (exclude from all container builds)
 *.md
+!README.md
 CONTRIBUTING.md
 CHANGELOG.md
 EXAMPLES.md
+CONTAINER_GUIDE.md
+PROJECT_STRUCTURE.md
+SETUP.md
 docs/
 
 # Python

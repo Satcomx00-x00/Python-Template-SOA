@@ -1,0 +1,94 @@
+# ============================================================================
+# Containerfile.webapp - Web Application
+# ============================================================================
+# Optimized for web applications (Flask, FastAPI, Django, etc.)
+# Includes:
+#   - HTTP server setup (gunicorn/uvicorn)
+#   - Port exposure
+#   - Health checks
+#   - Production-ready configurations
+#
+# Build: docker build -f Containerfile.webapp -t python-webapp .
+# Run:   docker run -p 8000:8000 python-webapp
+# ============================================================================
+
+# Use official Python slim image as base
+FROM python:3.13-slim
+
+# Set environment variables
+# PYTHONUNBUFFERED: Prevents Python from buffering stdout/stderr (better for container logs)
+# PYTHONDONTWRITEBYTECODE: Prevents Python from writing .pyc files
+# UV_SYSTEM_PYTHON: Allow uv to use system Python in container
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    UV_SYSTEM_PYTHON=1 \
+    PORT=8000
+
+# Set working directory inside container
+WORKDIR /app
+
+# Install uv - fast Python package installer
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# Copy dependency files first (for layer caching)
+COPY pyproject.toml ./
+
+# Install dependencies using uv
+# Add web server dependencies for production
+RUN uv pip install --system -r pyproject.toml && \
+    uv pip install --system gunicorn uvicorn[standard] fastapi flask
+
+# Copy the application source code
+COPY src/ ./src/
+
+# Create a non-root user for security
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose the port the app runs on
+EXPOSE 8000
+
+# Health check - adjust endpoint for your application
+# Example for FastAPI/Flask apps
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+
+# Default command - adjust based on your web framework
+# 
+# For FastAPI with uvicorn:
+# CMD ["uvicorn", "python_template.main:app", "--host", "0.0.0.0", "--port", "8000"]
+#
+# For Flask with gunicorn:
+# CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "python_template.main:app"]
+#
+# For Django:
+# CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "myproject.wsgi:application"]
+
+CMD ["uvicorn", "python_template.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+
+# ============================================================================
+# Usage Examples
+# ============================================================================
+#
+# Build and run:
+#   docker build -f Containerfile.webapp -t python-webapp .
+#   docker run -p 8000:8000 python-webapp
+#
+# Run with custom port:
+#   docker run -p 3000:8000 python-webapp
+#
+# Run with environment variables:
+#   docker run -p 8000:8000 -e DATABASE_URL=postgres://... python-webapp
+#
+# Run in detached mode:
+#   docker run -d -p 8000:8000 --name my-webapp python-webapp
+#
+# View logs:
+#   docker logs -f my-webapp
+#
+# Stop container:
+#   docker stop my-webapp
+# ============================================================================

@@ -65,8 +65,15 @@ help:
 	@echo "  make clean-all        Remove all generated files including venv"
 	@echo ""
 	@echo "$(GREEN)Container:$(NC)"
-	@echo "  make container-build  Build container image"
-	@echo "  make container-run    Run container"
+	@echo "  make container-build         Build general purpose container"
+	@echo "  make container-build-webapp  Build webapp container"
+	@echo "  make container-build-algo    Build algorithmic container"
+	@echo "  make container-build-cli     Build CLI container"
+	@echo "  make container-build-all     Build all container variants"
+	@echo "  make container-run           Run general purpose container"
+	@echo "  make container-run-webapp    Run webapp container (port 8000)"
+	@echo "  make container-run-algo      Run algo container"
+	@echo "  make container-run-cli       Run CLI container"
 	@echo ""
 	@echo "$(GREEN)Changelog:$(NC)"
 	@echo "  make changelog        Generate changelog with git-cliff"
@@ -209,18 +216,62 @@ clean-all: clean
 # Container Operations
 # ============================================================================
 
-# Build container image
+# Build container image (general purpose)
 .PHONY: container-build
 container-build:
 	@echo "$(BLUE)Building container image...$(NC)"
 	docker build -f Containerfile -t python-template-soa:latest .
 	@echo "$(GREEN)✓ Container image built: python-template-soa:latest$(NC)"
 
-# Run container
+# Build webapp container
+.PHONY: container-build-webapp
+container-build-webapp:
+	@echo "$(BLUE)Building webapp container image...$(NC)"
+	docker build -f Containerfile.webapp -t python-template-soa:webapp .
+	@echo "$(GREEN)✓ Webapp container built: python-template-soa:webapp$(NC)"
+
+# Build algo container
+.PHONY: container-build-algo
+container-build-algo:
+	@echo "$(BLUE)Building algo container image...$(NC)"
+	docker build -f Containerfile.algo -t python-template-soa:algo .
+	@echo "$(GREEN)✓ Algo container built: python-template-soa:algo$(NC)"
+
+# Build CLI container
+.PHONY: container-build-cli
+container-build-cli:
+	@echo "$(BLUE)Building CLI container image...$(NC)"
+	docker build -f Containerfile.cli -t python-template-soa:cli .
+	@echo "$(GREEN)✓ CLI container built: python-template-soa:cli$(NC)"
+
+# Build all container variants
+.PHONY: container-build-all
+container-build-all: container-build container-build-webapp container-build-algo container-build-cli
+	@echo "$(GREEN)✓ All container variants built!$(NC)"
+
+# Run container (general purpose)
 .PHONY: container-run
 container-run:
 	@echo "$(BLUE)Running container...$(NC)"
 	docker run --rm python-template-soa:latest
+
+# Run webapp container
+.PHONY: container-run-webapp
+container-run-webapp:
+	@echo "$(BLUE)Running webapp container...$(NC)"
+	docker run --rm -p 8000:8000 python-template-soa:webapp
+
+# Run algo container
+.PHONY: container-run-algo
+container-run-algo:
+	@echo "$(BLUE)Running algo container...$(NC)"
+	docker run --rm python-template-soa:algo
+
+# Run CLI container
+.PHONY: container-run-cli
+container-run-cli:
+	@echo "$(BLUE)Running CLI container...$(NC)"
+	docker run --rm python-template-soa:cli
 
 # ============================================================================
 # Utility Targets

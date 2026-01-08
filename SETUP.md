@@ -5,7 +5,7 @@ This guide will help you get started with the Python Template SOA in minutes.
 ## Prerequisites
 
 Before you begin, ensure you have:
-- **Python 3.11+** installed
+- **Python 3.13+** installed
 - **Git** for version control
 - **Make** (usually pre-installed on Linux/Mac)
 
