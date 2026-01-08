@@ -49,6 +49,11 @@ Issues = "https://github.com/yourusername/python-template-soa/issues"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+# Hatchling build configuration
+[tool.hatch.build.targets.wheel]
+# Specify where the package source is located
+packages = ["src/python_template"]
+
 # ============================================================================
 # Tool Configuration
 # ============================================================================
@@ -56,8 +61,11 @@ build-backend = "hatchling.build"
 # --- uv Configuration ---
 # uv is a fast Python package installer and resolver
 [tool.uv]
-# Development dependencies to install by default
-dev-dependencies = [
+# No longer using deprecated dev-dependencies here
+
+# Development dependency groups (replaces tool.uv.dev-dependencies)
+[dependency-groups]
+dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
     "ruff>=0.1.0",

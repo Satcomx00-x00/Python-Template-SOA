@@ -260,19 +260,19 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history for git-cliff
       
-      # Install git-cliff
-      - name: Install git-cliff
-        run: |
-          echo "📥 Installing git-cliff..."
-          curl -LsSf https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-$(uname -m)-unknown-linux-gnu.tar.gz | tar xzf - -C /usr/local/bin
-          echo "✅ git-cliff installed!"
+      # Use official git-cliff GitHub Action
+      - name: Generate changelog with git-cliff
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --output CHANGELOG-PREVIEW.md
+        env:
+          OUTPUT: CHANGELOG-PREVIEW.md
       
-      # Generate changelog to verify configuration
-      - name: Generate changelog
+      # Display preview
+      - name: Display changelog preview
         run: |
-          echo "📋 Generating changelog with git-cliff..."
-          git-cliff --output CHANGELOG-PREVIEW.md
-          echo "✅ Changelog generated successfully!"
+          echo "📋 Changelog generated successfully!"
           echo ""
           echo "Preview of generated changelog:"
           head -n 50 CHANGELOG-PREVIEW.md

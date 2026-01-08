@@ -48,6 +48,10 @@ make install
 
 # Install only dev dependencies
 make install-dev
+
+# Or manually with uv
+uv sync              # Install all dependencies
+uv sync --group dev  # Install dev group only
 ```
 
 ### Code Quality

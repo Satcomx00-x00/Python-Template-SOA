@@ -83,14 +83,14 @@ make changelog
 This project uses [uv](https://github.com/astral-sh/uv) for fast and reliable dependency management:
 
 ```bash
-# Install dependencies
+# Install dependencies (includes dev dependencies)
 uv sync
 
 # Add a new dependency
 uv add <package-name>
 
-# Add a development dependency
-uv add --dev <package-name>
+# Add a development dependency (to dev group)
+uv add --group dev <package-name>
 
 # Run Python with project dependencies
 uv run python src/python_template/main.py
@@ -141,8 +141,8 @@ The GitHub Actions workflow automatically:
 # Runtime dependency
 uv add requests
 
-# Development dependency
-uv add --dev black
+# Development dependency (added to dev group)
+uv add --group dev black
 ```
 
 ### Modifying CI/CD
