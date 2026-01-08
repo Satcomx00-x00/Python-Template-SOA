@@ -1,0 +1,120 @@
+{
+  // ============================================================================
+  // DevContainer Configuration
+  // ============================================================================
+  // This file configures a development container for VS Code
+  // It ensures all developers have a consistent environment
+  // For more info: https://containers.dev
+  // ============================================================================
+
+  // Name of the dev container (appears in VS Code)
+  "name": "Python Template SOA",
+
+  // Use the Containerfile in the root directory
+  "build": {
+    "dockerfile": "../Containerfile",
+    "context": ".."
+  },
+
+  // Alternative: Use a pre-built image instead of Containerfile
+  // "image": "mcr.microsoft.com/devcontainers/python:3.11",
+
+  // Features to add to the container
+  // See: https://containers.dev/features
+  "features": {
+    // Git - version control
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    // GitHub CLI - interact with GitHub from terminal
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  },
+
+  // VS Code settings to apply inside the container
+  "customizations": {
+    "vscode": {
+      // Extensions to install in the container
+      "extensions": [
+        // Python language support
+        "ms-python.python",
+        // Python debugger
+        "ms-python.debugpy",
+        // Ruff linter and formatter
+        "charliermarsh.ruff",
+        // Better TOML support (for pyproject.toml)
+        "tamasfe.even-better-toml",
+        // GitLens - enhanced Git support
+        "eamodio.gitlens",
+        // Docker support
+        "ms-azuretools.vscode-docker"
+      ],
+      
+      // VS Code settings for Python development
+      "settings": {
+        // Python configuration
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["tests"],
+        
+        // Ruff configuration
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          }
+        },
+        
+        // File associations
+        "files.associations": {
+          "Containerfile": "dockerfile"
+        },
+        
+        // Editor settings
+        "editor.rulers": [88],  // Show ruler at max line length
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true
+      }
+    }
+  },
+
+  // Port forwarding - forward these ports from container to host
+  // Uncomment and adjust if your application serves HTTP traffic
+  // "forwardPorts": [8000],
+
+  // Command to run after container is created
+  // This ensures dependencies are installed
+  "postCreateCommand": "uv sync",
+
+  // Command to run each time the container starts
+  // "postStartCommand": "",
+
+  // Environment variables to set in the container
+  "remoteEnv": {
+    "PYTHONPATH": "/workspaces/Python-Template-SOA/src"
+  },
+
+  // Mount the local .git folder (enables Git operations)
+  "mounts": [
+    "source=${localWorkspaceFolder}/.git,target=/workspaces/Python-Template-SOA/.git,type=bind,consistency=cached"
+  ],
+
+  // Run as the non-root user created in Containerfile
+  // Comment this out if using a pre-built image without custom user
+  "remoteUser": "appuser",
+
+  // Allow the container to use the host's SSH agent (for Git operations)
+  // Requires SSH agent to be running on host
+  // "mounts": [
+  //   "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/appuser/.ssh,readonly,type=bind,consistency=cached"
+  // ],
+
+  // Lifecycle scripts
+  // "initializeCommand": "",     // Runs on host before container is created
+  // "onCreateCommand": "",       // Runs once when container is created
+  // "updateContentCommand": "",  // Runs when container config changes
+  // "postAttachCommand": ""      // Runs each time you attach to container
+}

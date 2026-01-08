@@ -1,0 +1,197 @@
+# ============================================================================
+# Project Metadata
+# ============================================================================
+# This file defines project configuration, dependencies, and tool settings
+# For more info: https://packaging.python.org/en/latest/specifications/pyproject-toml/
+
+[project]
+# Project name - change this to your project's name
+name = "python-template-soa"
+version = "0.1.0"
+description = "A modern Python project template with uv, containerization, and CI/CD"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+readme = "README.md"
+license = { text = "MIT" }
+
+# Python version requirement
+# Adjust this based on your needs (e.g., ">=3.11" for Python 3.11+)
+requires-python = ">=3.11"
+
+# Runtime dependencies
+# Add packages your application needs to run
+dependencies = [
+    # Example: "requests>=2.31.0",
+]
+
+# Optional dependencies for different use cases
+# Install with: uv sync --extra dev
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",           # Testing framework
+    "pytest-cov>=4.1.0",       # Coverage plugin for pytest
+    "ruff>=0.1.0",             # Fast linter and formatter
+    "bandit>=1.7.5",           # Security vulnerability scanner
+    "mypy>=1.7.0",             # Static type checker
+]
+
+# Project URLs
+[project.urls]
+Homepage = "https://github.com/yourusername/python-template-soa"
+Repository = "https://github.com/yourusername/python-template-soa"
+Issues = "https://github.com/yourusername/python-template-soa/issues"
+
+# ============================================================================
+# Build System (using uv)
+# ============================================================================
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# ============================================================================
+# Tool Configuration
+# ============================================================================
+
+# --- uv Configuration ---
+# uv is a fast Python package installer and resolver
+[tool.uv]
+# Development dependencies to install by default
+dev-dependencies = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "bandit>=1.7.5",
+    "mypy>=1.7.0",
+]
+
+# --- pytest Configuration ---
+# Testing framework configuration
+[tool.pytest.ini_options]
+# Where to look for tests
+testpaths = ["tests"]
+# Python files to search for tests
+python_files = ["test_*.py", "*_test.py"]
+# Functions/classes to recognize as tests
+python_functions = ["test_*"]
+python_classes = ["Test*"]
+# Minimum code coverage percentage (fail if below this)
+addopts = [
+    "--strict-markers",           # Ensure all markers are defined
+    "--strict-config",            # Ensure pytest config is valid
+    "--cov=src",                  # Measure coverage for src/ directory
+    "--cov-report=term-missing",  # Show missing lines in terminal
+    "--cov-report=html",          # Generate HTML coverage report
+    "--cov-fail-under=80",        # Fail if coverage below 80%
+]
+
+# --- ruff Configuration ---
+# Fast Python linter and formatter
+[tool.ruff]
+# Target Python version
+target-version = "py311"
+
+# Files and directories to include
+include = ["src/**/*.py", "tests/**/*.py"]
+# Files and directories to exclude
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+# Maximum line length (PEP 8 recommends 79, but 88 is common for Black compatibility)
+line-length = 88
+
+# Enable auto-fixing where possible
+fix = true
+
+# --- ruff Linting Rules ---
+[tool.ruff.lint]
+# Enable these rule sets:
+# E/W: pycodestyle errors and warnings
+# F: pyflakes (unused imports, undefined names, etc.)
+# I: isort (import sorting)
+# N: pep8-naming (naming conventions)
+# UP: pyupgrade (modernize Python code)
+# B: flake8-bugbear (likely bugs and design problems)
+# S: bandit (security issues)
+# C4: flake8-comprehensions (better list/dict comprehensions)
+select = ["E", "W", "F", "I", "N", "UP", "B", "S", "C4"]
+
+# Disable specific rules that may be too strict
+ignore = [
+    "E501",  # Line too long (handled by formatter)
+    "S101",  # Use of assert (OK in tests)
+]
+
+# --- ruff Import Sorting ---
+[tool.ruff.lint.isort]
+# Group imports by type
+known-first-party = ["python_template"]
+
+# --- ruff Per-File Ignores ---
+[tool.ruff.lint.per-file-ignores]
+# Tests can use assert and don't need all security checks
+"tests/**/*.py" = ["S101", "S105", "S106"]
+
+# --- mypy Configuration ---
+# Static type checker
+[tool.mypy]
+# Target Python version
+python_version = "3.11"
+# Directories to type check
+files = ["src", "tests"]
+
+# Strict type checking options
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_optional = true
+
+# Display options
+show_error_codes = true
+show_error_context = true
+pretty = true
+
+# --- bandit Configuration ---
+# Security vulnerability scanner
+[tool.bandit]
+# Paths to exclude from scanning
+exclude_dirs = [
+    ".venv",
+    "venv",
+    "tests",  # Tests may have intentional security issues for testing
+]
+# Tests to skip (if any)
+skips = []
+# Tests to run (empty = all)
+tests = []
+
+# --- Coverage Configuration ---
+[tool.coverage.run]
+# Files to include in coverage
+source = ["src"]
+# Files to omit from coverage
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+# Ignore these when reporting coverage
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

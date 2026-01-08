@@ -1,0 +1,62 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github
+
+# Documentation
+*.md
+CONTRIBUTING.md
+CHANGELOG.md
+EXAMPLES.md
+docs/
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+dist/
+build/
+
+# Virtual environments
+.venv
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# DevContainer
+.devcontainer/
+
+# Build artifacts
+*.log
+*.egg-info/
+
+# uv
+.uv/
+uv.lock
+
+# Other
+.mypy_cache/
+.ruff_cache/
